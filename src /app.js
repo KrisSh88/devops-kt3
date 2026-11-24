@@ -8,8 +8,6 @@ res.writeHead(200, {
 res.end('KT3 App');
 }
 
-JavaScript
-
 else if (req.url === '/health') {
     res.writeHead(200, {
         'Content-Type': 'application/json'
