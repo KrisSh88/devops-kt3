@@ -1,33 +1,26 @@
-const http = require('http');
+const request = require('supertest');
 const server = require('../src/app');
 
 describe('KT3 App', () => {
-let testServer;
+test('GET / returns KT3 App', async () => {
+const response = await request(server).get('/');
 
-
-JavaScript
-beforeAll(() => {
-    testServer = http.createServer(server);
+expect(response.status).toBe(200);
+    expect(response.text).toBe('KT3 App');
 });
 
-afterAll(() => {
-    testServer.close();
-});
+test('GET /health returns status ok', async () => {
+    const response = await request(server).get('/health');
 
-test('GET / returns KT3 App', (done) => {
-    testServer.listen(0, () => {
-        const port = testServer.address().port;
-
-        http.get(`http://localhost:${port}/`, (res) => {
-            expect(res.statusCode).toBe(200);
-
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                expect(data).toBe('KT3 App');
-                done();
-            });
-        });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+        status: 'ok'
     });
+});
+
+test('Unknown route returns 404', async () => {
+    const response = await request(server).get('/unknown');
+
+    expect(response.status).toBe(404);
 });
 });
